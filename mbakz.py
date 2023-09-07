@@ -92,7 +92,8 @@ responses = {
     ("Leg & Foot",): ["Mulendzhe"],
     ("Toes",): ["Zwikunwane"],
     ("Heel",): ["Tshirethe"],
-    ("Skin",): ["Lukanda"]
+    ("Skin",): ["Lukanda"],
+    ("Table",): ["Tafula"]  
 
 
 
@@ -110,11 +111,11 @@ def get_response(user_input):
     return "Thi khou vha pfesesa."
 
 # Main chat loop
-print("ChatBot: Ndaa! Kha vha nwale (Ndi zwone ), u fhedza nyambedzano")
+print("ChatBot: Ndaa! Kha vha nwale nga luisimani zwine vha khou toda zwi tshi nwaliwa nga Tshivenda. (Kha vha nwale (Ndi zwone ), u fhedza nyambedzano)")
 while True:
     user_input = input("You: ")
     if user_input.lower() == "ndi zwone":
         print("ChatBot: Zwavhudi!")
         break
     response = get_response(user_input.lower())
-    print("ChatBot:", response)
+    print("Translation (Eng-Tshiv):", response)

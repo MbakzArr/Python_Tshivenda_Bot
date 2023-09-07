@@ -7,7 +7,7 @@ responses = {
     "nne ndi right, vhone?": ["Na nne ndi right mah"],
     "hello": ["Hi there!", "Hello!", "Hey!"],
     "how are you": ["I'm good, thanks!", "I'm doing well.", "I'm just a bot, but thanks for asking!"],
-    "what's your name": ["My Name is Arrhenius Bot."],
+    "dzina lavho ndi nnyi?": ["Ndi nne Arrhenius Bot."],
     "bye": ["Goodbye!", "See you later!", "Have a great day!"]
 }
 

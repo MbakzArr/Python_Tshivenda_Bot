@@ -1,45 +1,29 @@
-import random
-import json
-import os
-from news import news
-
-# Get the current working directory
-current_dir = os.getcwd()
-
-# Path to the "dataset" directory
-dataset_dir = os.path.join(current_dir, 'dataset')
-
-# Path to the "responses.json" file within the "dataset" directory
-file = os.path.join(dataset_dir, 'response.json')
-
-# Load responses from the JSON file
-with open(file, 'r', encoding='utf-8') as json_file:
-    responses = json.load(json_file)
-
-
-# Function to generate a response
-def get_response(_input):
-    for key, value in responses.items():
-        if key.lower() in _input.lower():
-            return random.choice(value)
-    return "Thi khou vha pfesesa."
-
+from news.news import get_random_news
+from history.history import venda_history, geography
+from translation.translate import translation
 
 # Main chat loop
 print(
     "ChatBot: Ndaa! Kha vha nwale nga luisimani zwine vha khou toda zwi tshi nwaliwa nga Tshivenda. (Kha vha nwale ("
     "Ndi zwone ), u fhedza nyambedzano)")
 while True:
-    _input = input("You: ")
-    if _input.lower() == "ndi zwone":
+    _input = input("You: ").lower().strip()
+    if _input == "ndi zwone":
         print("ChatBot: Zwavhudi!")
         break
-
-    elif _input.startswith("/"):
-        if _input.lower() == "/news":
-            print("Bot may take time to respond...")
-            print(news.get_random_news())
+    elif _input.startswith("/translate"):
+        if _input.replace("/translate", "").strip() == "":
+            print("No word found. Try again [e.g /translate Welcome]")
         else:
-            print("Command could not be found")
-    elif get_response(_input) is not None:
-        print("Translation (English-Tshivenda):", get_response(_input))
+            print("Translation (English-Tshivenda):", translation(_input.replace("/translate", "").strip()))
+    elif _input == "/news":
+        print(get_random_news())
+    elif _input.startswith("/learn"):
+        if _input.replace("/learn", "").strip() == "venda":
+            print(venda_history())
+        elif _input.replace("/learn", "").strip() == "geography":
+            print(geography())
+        else:
+            print("Custom topic is not yet implemented")
+    else:
+        print("Command could not be found.")

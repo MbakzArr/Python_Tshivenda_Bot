@@ -8,6 +8,8 @@ def get_random_news():
     # URL of the website you want to scrape
     url = 'https://www.limpopomirror.co.za/articles/venda'
 
+    print("Bot may take time to respond...")
+
     # Send an HTTP GET request to the URL
     response = requests.get(url)
 

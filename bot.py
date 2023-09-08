@@ -1,6 +1,7 @@
 import random
 import json
 import os
+from news import news
 
 # Get the current working directory
 current_dir = os.getcwd()
@@ -26,11 +27,19 @@ def get_response(_input):
 
 # Main chat loop
 print(
-    "ChatBot: Ndaa! Kha vha nwale nga luisimani zwine vha khou toda zwi tshi nwaliwa nga Tshivenda. (Kha vha nwale (Ndi zwone ), u fhedza nyambedzano)")
+    "ChatBot: Ndaa! Kha vha nwale nga luisimani zwine vha khou toda zwi tshi nwaliwa nga Tshivenda. (Kha vha nwale ("
+    "Ndi zwone ), u fhedza nyambedzano)")
 while True:
     _input = input("You: ")
     if _input.lower() == "ndi zwone":
         print("ChatBot: Zwavhudi!")
         break
-    response = get_response(_input)
-    print("Translation (English-Tshivenda):", response)
+
+    elif _input.startswith("/"):
+        if _input.lower() == "/news":
+            print("Bot may take time to respond...")
+            print(news.get_random_news())
+        else:
+            print("Command could not be found")
+    elif get_response(_input) is not None:
+        print("Translation (English-Tshivenda):", get_response(_input))

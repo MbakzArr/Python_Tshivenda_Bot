@@ -68,7 +68,8 @@
     "Shoulders": ["Mahada"],
     "Chest": ["Khana"],
     "Elbow": ["Tshikudavhavha"],
-    "Arm & Hand": ["Tshanda"],
+    "Arm": ["Tshanda"],
+    "Hand": ["Tshanda"],
     "Fingers": ["Minwe"],
     "Nails": ["Nala"],
     "Stomach": ["Thumbu"],
@@ -83,5 +84,29 @@
     "Toes": ["Zwikunwane"],
     "Heel": ["Tshirethe"],
     "Skin": ["Lukanda"],
-    "Table": ["Tafula"]
+    "Table": ["Tafula"],
+    "play ball": ["tamba bola"],
+    "drink beer": ["nwa halwa"],
+    "go to school": ["ya tshikoloni"],
+    "read a book": ["vhala bugu"],
+    "read books": ["Vhala dzi bugu"],
+    "everyday": ["duvha linwe-na-linwe"],
+    "All the time": ["tshifhinga tshothe"],
+    "All the times": ["Zwifhinga zwothe"],
+    "I eat bread": ["Nne ndi la vhurotho"],
+    "I go to school": ["Nne ndi ya tshikoloni"],
+    "Rendani reads a book": ["Rendani u vhala bugu"],
+    "Rendani reads books": ["Rendani u vhala dzibugu"],
+    "Tshifhiwa drinks beer everyday": ["Tshifhiwa u nwa halwa duvha linwe-na-linwe"],
+    "You drive a car": ["Inwi ni reila goloi"],
+    "Car": ["Goloi"],
+    "I am typing": ["Nne ndi khou thaipha"],
+    "You are reading": ["Inwi ni khou vhala"],
+    "he is drinking alcohol": ["U khou nwa halwa"]
+      
+      
+
+
+
+      
 }

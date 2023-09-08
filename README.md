@@ -21,6 +21,7 @@ To interact with the bot, you can send it messages or commands related to the ob
 - To translate a phrase to Tshivenda: `/translate [your text]`
 - To get the latest news in Tshivenda: `/news`
 - To learn about Tshivenda culture, history, or geography: `/learn [topic]`
+- Dictionary
 
 Feel free to explore and discover more features as you interact with the bot!
 

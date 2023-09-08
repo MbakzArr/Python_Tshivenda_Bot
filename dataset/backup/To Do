@@ -1,0 +1,23 @@
+Make a plan for words like   :
+
+ Day = Duvha
+ Duvha = sun
+ but Duvha != day 
+
+ Invitation = Thambo
+Thambo = Rope
+
+Rope != Invitation
+
+
+
+
+"Hello-male": ["Nnda!"],
+    "Hello-Female)": ["Aa!"],
+
+    "good morning-start": ["NDI MATSHELONI"],
+    "good afternoon-start": ["NDI MASIARI"],
+    "good evening": ["NDI MADEKWANA"],
+    "good morning-response": ["NDI MATSHELONI AVHUDI"],
+    "good afternoon-response": ["NDI MASIARI AVHUDI"],
+    "good evening": ["NDI MADEKWANA AVHUDI"],

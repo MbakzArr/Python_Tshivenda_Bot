@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ve">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tshivenda Bot</title>
+<meta name="description" content="Translate, look up and practise Tshivenda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Gentium Book Plus is used for all Tshivenda text. SIL drew it to carry
+     the marks under d, l, n, t and v that this language needs. -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E4E6DA;        /* dried mopane leaf */
+  --paper-2:#EDEEE4;
+  --ink:#16241D;          /* burnished pot in forest light */
+  --ink-soft:#4A5B50;
+  --mist:#8B9A8B;
+  --lake:#1E5C4C;         /* Fundudzi */
+  --lake-tint:#D3E0D6;
+  --ochre:#B57324;        /* pottery band, means not yet checked */
+  --oxide:#8C3E2B;        /* only ever means wrong */
+  --line:#C3C8B7;
+  --mark-h:4px;
+  --r:10px;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  --body:"Gentium Book Plus","Charis SIL","Doulos SIL","Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.wrap{max-width:720px;margin:0 auto;padding:0 20px 80px}
+
+/* ---------- the signature: a mark that sits under the thing ---------- */
+.mark{display:block;height:var(--mark-h);background:var(--lake);border-radius:2px;transform-origin:left center}
+.mark.dotted{background:none;border-top:var(--mark-h) dotted var(--ochre);height:0}
+.mark.short{width:34px;margin:8px 0 12px}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.drawn{animation:draw .28s cubic-bezier(.2,.7,.3,1) both}
+
+/* ---------- header ---------- */
+header{padding:30px 0 22px}
+.brand{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.wordmark{font-family:var(--display);font-weight:800;font-size:clamp(28px,7vw,40px);letter-spacing:-.02em;margin:0;line-height:1}
+.wordmark .u{position:relative;display:inline-block}
+.wordmark .u::after{content:"";position:absolute;left:8%;right:8%;bottom:-.16em;height:6px;background:var(--lake);border-radius:3px}
+.tagline{font-size:15px;color:var(--ink-soft);margin:10px 0 0;max-width:46ch}
+.count{font-family:var(--mono);font-size:12px;color:var(--ink-soft);letter-spacing:.04em;white-space:nowrap}
+
+/* ---------- tabs ---------- */
+nav{display:flex;gap:4px;overflow-x:auto;margin:22px 0 26px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.tab{
+  font-family:var(--display);font-size:14px;font-weight:600;letter-spacing:.01em;
+  background:none;border:0;color:var(--ink-soft);cursor:pointer;
+  padding:8px 12px 11px;position:relative;white-space:nowrap;border-radius:6px 6px 0 0;
+}
+.tab:hover{color:var(--ink)}
+.tab::after{content:"";position:absolute;left:12px;right:12px;bottom:2px;height:var(--mark-h);border-radius:2px;background:var(--lake);transform:scaleX(0);transform-origin:center;transition:transform .2s ease}
+.tab[aria-selected="true"]{color:var(--ink)}
+.tab[aria-selected="true"]::after{transform:scaleX(1)}
+.tab:focus-visible{outline:2px solid var(--lake);outline-offset:2px}
+
+/* ---------- the ask box ---------- */
+.ask{position:relative}
+.ask textarea{
+  width:100%;background:var(--paper-2);border:1px solid var(--line);border-bottom-width:1px;
+  border-radius:var(--r);padding:18px 18px 20px;font-family:var(--body);
+  font-size:clamp(19px,4.4vw,23px);line-height:1.35;color:var(--ink);resize:none;min-height:98px;
+}
+.ask textarea::placeholder{color:var(--mist)}
+.ask textarea:focus{outline:none;border-color:var(--mist);background:#fff}
+.ask .focusmark{position:absolute;left:18px;right:18px;bottom:9px;height:var(--mark-h);border-radius:2px;background:var(--lake);transform:scaleX(0);transform-origin:center;transition:transform .22s ease;pointer-events:none}
+.ask textarea:focus ~ .focusmark{transform:scaleX(1)}
+.askrow{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+button.go{
+  font-family:var(--display);font-weight:600;font-size:15px;background:var(--lake);color:var(--paper-2);
+  border:0;border-radius:var(--r);padding:11px 22px;cursor:pointer;transition:background .15s
+}
+button.go:hover{background:#164A3D}
+button.go:disabled{opacity:.5;cursor:default}
+.hint{font-size:13px;color:var(--ink-soft)}
+.dir{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lake);background:var(--lake-tint);padding:4px 9px;border-radius:20px}
+
+/* ---------- result ---------- */
+.result{margin-top:30px}
+.answer{font-size:clamp(26px,6.4vw,36px);line-height:1.25;margin:0;font-weight:400;letter-spacing:-.01em}
+.answer .gap{color:var(--ochre);font-style:italic;border-bottom:3px dotted var(--ochre);padding-bottom:2px}
+.meta{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-top:14px;letter-spacing:.03em}
+
+/* the chain: source above, mark between, target below */
+.chain{display:flex;flex-wrap:wrap;gap:14px 22px;margin-top:28px;padding:22px 0 4px;border-top:1px solid var(--line)}
+.link{min-width:88px;flex:0 1 auto}
+.link .src{font-family:var(--mono);font-size:11px;color:var(--mist);letter-spacing:.06em;text-transform:lowercase;padding-bottom:8px;word-break:break-word}
+.link .tgt{font-size:20px;padding-top:9px;line-height:1.25;word-break:break-word}
+.link.miss .src{color:var(--ochre)}
+.link.miss .tgt{color:var(--ochre);font-style:italic;font-size:15px}
+
+.note{margin-top:16px;font-size:14px;color:var(--ink-soft);padding-left:14px;border-left:2px solid var(--line)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{font-family:var(--display);font-size:13px;font-weight:600;background:var(--paper-2);border:1px solid var(--line);border-radius:20px;padding:6px 13px;cursor:pointer;color:var(--ink)}
+.chip:hover{border-color:var(--lake);color:var(--lake)}
+
+/* ---------- cards ---------- */
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-top:16px}
+.card h3{font-family:var(--display);font-size:15px;font-weight:600;margin:0 0 4px;letter-spacing:.01em}
+.card .ve{font-size:21px;line-height:1.35}
+.card .en{color:var(--ink-soft);font-size:16px;margin-top:6px}
+.card .sub{font-family:var(--mono);font-size:11px;color:var(--ink-soft);letter-spacing:.05em;text-transform:uppercase;margin-top:12px}
+.unverified{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ochre);border:1px solid var(--ochre);border-radius:3px;padding:2px 6px;margin-left:8px;vertical-align:2px}
+
+/* ---------- practise ---------- */
+.prompt{font-size:clamp(22px,5.2vw,29px);line-height:1.3;margin:0 0 24px;letter-spacing:-.01em}
+.opts{display:grid;gap:9px}
+.opt{
+  text-align:left;font-family:var(--body);font-size:19px;background:var(--paper-2);
+  border:1px solid var(--line);border-radius:var(--r);padding:15px 17px;cursor:pointer;color:var(--ink);
+  transition:border-color .12s,background .12s
+}
+.opt:hover:not(:disabled){border-color:var(--lake);background:#fff}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--lake);background:var(--lake-tint)}
+.opt.wrong{border-color:var(--oxide);color:var(--oxide)}
+.opt:focus-visible{outline:2px solid var(--lake);outline-offset:2px}
+.score{font-family:var(--mono);font-size:12px;color:var(--ink-soft);letter-spacing:.05em;margin-bottom:18px}
+
+/* ---------- forms ---------- */
+label{display:block;font-family:var(--display);font-size:13px;font-weight:600;margin:14px 0 5px}
+input[type=text],select,textarea.small{
+  width:100%;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;
+  padding:11px 13px;font-family:var(--body);font-size:17px;color:var(--ink)
+}
+input[type=text]:focus,select:focus,textarea.small:focus{outline:none;border-color:var(--lake);background:#fff}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+button.ghost{font-family:var(--display);font-weight:600;font-size:14px;background:none;border:1px solid var(--line);border-radius:8px;padding:9px 15px;cursor:pointer;color:var(--ink)}
+button.ghost:hover{border-color:var(--lake);color:var(--lake)}
+button.ghost.danger:hover{border-color:var(--oxide);color:var(--oxide)}
+
+.msg{margin-top:16px;font-size:15px;padding:12px 14px;border-radius:8px;background:var(--lake-tint);color:var(--lake)}
+.msg.bad{background:#F0DED8;color:var(--oxide)}
+.empty{color:var(--ink-soft);font-size:16px;margin-top:24px;max-width:52ch}
+.loading{font-family:var(--mono);font-size:12px;color:var(--mist);letter-spacing:.08em;text-transform:uppercase;margin-top:24px}
+.hide{display:none !important}
+footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  .tab::after,.ask .focusmark{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <h1 class="wordmark">Tshivend<span class="u">a</span> Bot</h1>
+    <span class="count" id="count">loading</span>
+  </div>
+  <p class="tagline">Type in either language. The mark under a word shows what was matched and what still needs a speaker.</p>
+</header>
+
+<nav role="tablist" aria-label="Sections">
+  <button class="tab" role="tab" data-view="translate" aria-selected="true">Translate</button>
+  <button class="tab" role="tab" data-view="practise" aria-selected="false">Practise</button>
+  <button class="tab" role="tab" data-view="lookup" aria-selected="false">Look up</button>
+  <button class="tab" role="tab" data-view="culture" aria-selected="false">Culture</button>
+  <button class="tab" role="tab" data-view="add" aria-selected="false">Add a word</button>
+  <button class="tab" role="tab" data-view="check" aria-selected="false">Check entries</button>
+</nav>
+
+<!-- TRANSLATE -->
+<section id="v-translate">
+  <div class="ask">
+    <textarea id="q" rows="2" placeholder="ndi khou toda madi" aria-label="Text to translate" autocomplete="off"></textarea>
+    <span class="focusmark"></span>
+  </div>
+  <div class="askrow">
+    <button class="go" id="goTranslate">Translate</button>
+    <span class="hint">Enter to translate, Shift and Enter for a new line</span>
+  </div>
+  <div id="tOut" class="result"></div>
+</section>
+
+<!-- PRACTISE -->
+<section id="v-practise" class="hide">
+  <div class="score" id="score">no answers yet</div>
+  <div id="pBody"></div>
+  <div class="actions">
+    <button class="ghost" id="nextQ">Next question</button>
+    <button class="ghost" id="startDrill">Drill my weak words</button>
+  </div>
+</section>
+
+<!-- LOOK UP -->
+<section id="v-lookup" class="hide">
+  <div class="ask">
+    <textarea id="s" rows="1" placeholder="thoho" aria-label="Word to look up" autocomplete="off"></textarea>
+    <span class="focusmark"></span>
+  </div>
+  <div class="askrow">
+    <button class="go" id="goLookup">Look up</button>
+    <button class="ghost" id="goWord">Word of the day</button>
+  </div>
+  <div id="lOut" class="result"></div>
+</section>
+
+<!-- CULTURE -->
+<section id="v-culture" class="hide">
+  <div class="chips">
+    <button class="chip" data-get="riddle">Riddle</button>
+    <button class="chip" data-get="proverb">Proverb</button>
+    <button class="chip" data-get="joke">Joke</button>
+    <button class="chip" data-get="culture">History</button>
+    <button class="chip" data-get="news">News</button>
+  </div>
+  <div id="cOut" class="result"></div>
+</section>
+
+<!-- ADD -->
+<section id="v-add" class="hide">
+  <p class="empty">Every word you add is saved straight to the dictionary file and shows up in translation and quizzes right away. It starts unverified until a speaker confirms it under Check entries.</p>
+  <div class="row2">
+    <div><label for="aEn">English</label><input type="text" id="aEn" autocomplete="off"></div>
+    <div><label for="aVe">Tshivenda</label><input type="text" id="aVe" autocomplete="off"></div>
+  </div>
+  <div class="row2">
+    <div><label for="aCat">Category</label><input type="text" id="aCat" placeholder="general" autocomplete="off"></div>
+    <div><label for="aPos">Part of speech</label><input type="text" id="aPos" placeholder="noun, verb, phrase" autocomplete="off"></div>
+  </div>
+  <label for="aNote">Note, such as another meaning</label>
+  <input type="text" id="aNote" autocomplete="off">
+  <div class="actions"><button class="go" id="goAdd">Save word</button></div>
+  <div id="aOut"></div>
+</section>
+
+<!-- CHECK -->
+<section id="v-check" class="hide">
+  <p class="empty">These entries came from the old dataset or were seeded automatically. Nobody has confirmed them yet. Confirm what is right, correct what is wrong, remove what does not belong.</p>
+  <div id="rOut"></div>
+</section>
+
+<footer>
+  Runs on your own machine. Nothing you type leaves it. Words marked
+  <span class="unverified">unverified</span> still need a first language speaker.
+</footer>
+
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (t, c, txt) => { const n = document.createElement(t); if(c) n.className = c; if(txt!==undefined) n.textContent = txt; return n; };
+
+async function api(path, body){
+  const opt = body ? {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)} : {};
+  const r = await fetch(path, opt);
+  return r.json();
+}
+
+/* ---------- tabs ---------- */
+const views = ['translate','practise','lookup','culture','add','check'];
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => show(t.dataset.view)));
+function show(name){
+  views.forEach(v => $('#v-'+v).classList.toggle('hide', v !== name));
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === name)));
+  if(name === 'check') loadPending();
+  if(name === 'practise' && !$('#pBody').childElementCount) nextQuestion();
+}
+
+/* ---------- stats ---------- */
+async function loadStats(){
+  const s = await api('/api/stats');
+  $('#count').textContent = s.entries + ' entries \u00b7 ' + s.verified + ' verified';
+  if(s.answers) $('#score').textContent =
+    s.answers + ' answered \u00b7 ' + s.accuracy + '% correct \u00b7 ' + s.mastered + ' mastered \u00b7 ' + s.due_today + ' due today';
+}
+
+/* ---------- translate ---------- */
+function markFor(matched){
+  const m = el('span','mark drawn' + (matched ? '' : ' dotted'));
+  return m;
+}
+function renderTranslate(d){
+  const out = $('#tOut'); out.innerHTML = '';
+  if(!d.ok){
+    out.appendChild(el('p','empty','None of those words are in the dictionary yet. Add them under Add a word and they will work from then on.'));
+    if(d.suggestions && d.suggestions.length){
+      const c = el('div','chips');
+      d.suggestions.forEach(s => { const b = el('button','chip',s); b.onclick = () => { $('#q').value = s; doTranslate(); }; c.appendChild(b); });
+      out.appendChild(c);
+    }
+    return;
+  }
+  const dir = el('span','dir', d.direction === 'en-ve' ? 'English \u2192 Tshivenda' : 'Tshivenda \u2192 English');
+  const drow = el('div','askrow'); drow.appendChild(dir); out.appendChild(drow);
+
+  const a = el('p','answer');
+  d.text.split(/(\[[^\]]+\])/).forEach(bit => {
+    if(/^\[.*\]$/.test(bit)) a.appendChild(el('span','gap', bit.slice(1,-1)));
+    else if(bit) a.appendChild(document.createTextNode(bit));
+  });
+  out.appendChild(a);
+
+  const matched = d.parts.filter(p => p.matched).length;
+  out.appendChild(el('div','meta', matched + ' of ' + d.parts.length + ' matched \u00b7 ' + Math.round(d.confidence*100) + '% confidence'));
+
+  if(d.parts.length > 1){
+    const chain = el('div','chain');
+    d.parts.forEach((p,i) => {
+      const link = el('div','link' + (p.matched ? '' : ' miss'));
+      link.appendChild(el('div','src', p.source));
+      const m = markFor(p.matched); m.style.animationDelay = (i*45)+'ms'; link.appendChild(m);
+      link.appendChild(el('div','tgt', p.matched ? p.target : 'not known'));
+      chain.appendChild(link);
+    });
+    out.appendChild(chain);
+  }
+  (d.notes||[]).forEach(n => out.appendChild(el('div','note', n)));
+  if(d.senses && d.senses.length){
+    const s = el('div','note','Also means: ' + d.senses.map(x => (d.direction==='en-ve'? x.ve : x.en) + (x.context ? ' ('+x.context+')' : '')).join(', '));
+    out.appendChild(s);
+  }
+  if(d.unknown && d.unknown.length){
+    const c = el('div','chips');
+    d.unknown.forEach(u => {
+      const b = el('button','chip','Add \u201c'+u+'\u201d');
+      b.onclick = () => { show('add'); $('#aEn').value = d.direction==='en-ve' ? u : ''; $('#aVe').value = d.direction==='en-ve' ? '' : u; $('#aEn').focus(); };
+      c.appendChild(b);
+    });
+    out.appendChild(c);
+  }
+}
+async function doTranslate(){
+  const text = $('#q').value.trim();
+  if(!text) return;
+  $('#tOut').innerHTML = '<div class="loading">translating</div>';
+  renderTranslate(await api('/api/translate', {text}));
+}
+$('#goTranslate').onclick = doTranslate;
+$('#q').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); doTranslate(); } });
+
+/* ---------- practise ---------- */
+let drill = [];
+async function nextQuestion(){
+  const b = $('#pBody'); b.innerHTML = '<div class="loading">building a question</div>';
+  let d;
+  if(drill.length){ d = await api('/api/drill/question', {id: drill.shift()}); }
+  else { d = await api('/api/quiz', {}); }
+  if(!d.ok){ b.innerHTML = ''; b.appendChild(el('p','empty', d.error)); return; }
+  b.innerHTML = '';
+  b.appendChild(el('p','prompt', d.prompt));
+  const g = el('div','opts');
+  d.options.forEach(o => {
+    const btn = el('button','opt', o);
+    btn.onclick = () => answer(d.token, o, g, btn);
+    g.appendChild(btn);
+  });
+  b.appendChild(g);
+}
+async function answer(token, given, group, clicked){
+  group.querySelectorAll('.opt').forEach(x => x.disabled = true);
+  const d = await api('/api/answer', {token, given});
+  if(!d.ok){ return; }
+  group.querySelectorAll('.opt').forEach(x => { if(x.textContent === d.answer) x.classList.add('right'); });
+  if(!d.correct) clicked.classList.add('wrong');
+  const f = el('div','card');
+  f.appendChild(el('h3', null, d.correct ? 'Ndi zwone. Correct.' : 'Not this time.'));
+  f.appendChild(el('div','en', d.correct
+    ? 'Coming back in ' + d.next_review_days + ' day' + (d.next_review_days===1?'':'s') + '.'
+    : 'The answer is ' + d.answer + '. This one comes back tomorrow.'));
+  if(d.note) f.appendChild(el('div','sub', d.note));
+  $('#pBody').appendChild(f);
+  loadStats();
+}
+$('#nextQ').onclick = nextQuestion;
+$('#startDrill').onclick = async () => {
+  const d = await api('/api/drill', {size: 10});
+  drill = d.queue.map(x => x.id);
+  nextQuestion();
+};
+
+/* ---------- look up ---------- */
+function senseCard(e){
+  const c = el('div','card');
+  const h = el('h3'); h.textContent = e.en;
+  if(!e.verified) h.appendChild(el('span','unverified','unverified'));
+  c.appendChild(h);
+  c.appendChild(el('span','mark short drawn'));
+  c.appendChild(el('div','ve', e.ve));
+  if(e.alt && e.alt.length) c.appendChild(el('div','en','also: ' + e.alt.join(', ')));
+  if(e.note) c.appendChild(el('div','en', e.note));
+  const tags = [e.pos, e.category, e.context].filter(Boolean).join(' \u00b7 ');
+  if(tags) c.appendChild(el('div','sub', tags));
+  return c;
+}
+async function doLookup(){
+  const w = $('#s').value.trim(); if(!w) return;
+  const out = $('#lOut'); out.innerHTML = '<div class="loading">looking</div>';
+  const d = await api('/api/define', {word: w});
+  out.innerHTML = '';
+  if(d.senses.length){
+    out.appendChild(el('div','meta', d.senses.length + (d.senses.length===1?' meaning':' meanings')));
+    d.senses.forEach(e => out.appendChild(senseCard(e)));
+    return;
+  }
+  const r = await api('/api/search', {q: w});
+  if(r.results && r.results.length){
+    out.appendChild(el('div','meta','no exact entry, ' + r.results.length + ' partial matches'));
+    r.results.slice(0,12).forEach(e => out.appendChild(senseCard(e)));
+    return;
+  }
+  out.appendChild(el('p','empty','Nothing yet for \u201c' + w + '\u201d.'));
+  if(d.near && d.near.length){
+    const c = el('div','chips');
+    d.near.forEach(n => { const b = el('button','chip',n); b.onclick = () => { $('#s').value = n; doLookup(); }; c.appendChild(b); });
+    out.appendChild(c);
+  }
+}
+$('#goLookup').onclick = doLookup;
+$('#s').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); doLookup(); } });
+$('#goWord').onclick = async () => {
+  const d = await api('/api/word');
+  const out = $('#lOut'); out.innerHTML = '';
+  out.appendChild(el('div','meta','Ipfi la duvha, word of the day'));
+  if(d.entry) out.appendChild(senseCard(d.entry));
+};
+
+/* ---------- culture ---------- */
+document.querySelectorAll('[data-get]').forEach(b => b.onclick = () => getContent(b.dataset.get));
+async function getContent(kind){
+  const out = $('#cOut'); out.innerHTML = '<div class="loading">fetching</div>';
+  if(kind === 'news'){
+    const d = await api('/api/news');
+    out.innerHTML = '';
+    if(!d.articles.length){ out.appendChild(el('p','empty','Could not reach the news site and nothing is cached. Check your connection.')); return; }
+    out.appendChild(el('div','meta', d.cached ? 'from cache' : 'fresh'));
+    d.articles.forEach(a => {
+      const c = el('div','card');
+      c.appendChild(el('h3', null, a.title));
+      c.appendChild(el('span','mark short'));
+      c.appendChild(el('div','en', a.summary || ''));
+      c.appendChild(el('div','sub', a.date + ' \u00b7 ' + a.source));
+      out.appendChild(c);
+    });
+    return;
+  }
+  const d = await api('/api/' + kind);
+  out.innerHTML = '';
+  const it = d.item;
+  if(!it){ out.appendChild(el('p','empty','Nothing saved here yet.')); return; }
+  const c = el('div','card');
+  const h = el('h3', null, {riddle:'Thai',proverb:'Murero',joke:'Tshiseo',culture:it.title||'Venda'}[kind]);
+  if(it.review) h.appendChild(el('span','unverified','unverified'));
+  c.appendChild(h);
+  c.appendChild(el('span','mark short drawn'));
+  c.appendChild(el('div','ve', it.ve || it.text || ''));
+  if(it.en) c.appendChild(el('div','en', it.en));
+  if(it.meaning) c.appendChild(el('div','en', it.meaning));
+  if(it.answer_ve){
+    const btn = el('button','ghost','Show the answer');
+    btn.onclick = () => { btn.replaceWith(el('div','ve', it.answer_ve + (it.answer_en ? ' \u2014 ' + it.answer_en : ''))); };
+    const a = el('div','actions'); a.appendChild(btn); c.appendChild(a);
+  }
+  if(it.source) c.appendChild(el('div','sub', it.source));
+  out.appendChild(c);
+}
+
+/* ---------- add ---------- */
+$('#goAdd').onclick = async () => {
+  const d = await api('/api/add', {
+    en: $('#aEn').value, ve: $('#aVe').value,
+    category: $('#aCat').value || 'general', pos: $('#aPos').value, note: $('#aNote').value
+  });
+  const out = $('#aOut'); out.innerHTML = '';
+  if(!d.ok){ out.appendChild(el('div','msg bad', d.error)); return; }
+  out.appendChild(el('div','msg','Saved. The dictionary is now ' + d.total + ' entries.'));
+  if(d.other_senses && d.other_senses.length)
+    out.appendChild(el('div','note','\u201c' + d.entry.ve + '\u201d already means ' + d.other_senses.map(x=>x.en).join(', ') + '. Both are kept as separate meanings.'));
+  ['aEn','aVe','aPos','aNote'].forEach(i => $('#'+i).value = '');
+  loadStats();
+};
+
+/* ---------- check ---------- */
+async function loadPending(){
+  const out = $('#rOut'); out.innerHTML = '<div class="loading">loading</div>';
+  const d = await api('/api/pending', {limit: 20});
+  out.innerHTML = '';
+  if(!d.total){ out.appendChild(el('p','empty','Everything has been checked.')); return; }
+  out.appendChild(el('div','meta', d.total + ' waiting'));
+  d.items.forEach(e => out.appendChild(reviewCard(e)));
+}
+function reviewCard(e){
+  const c = el('div','card');
+  c.appendChild(el('h3', null, e.en));
+  c.appendChild(el('span','mark short'));
+  c.appendChild(el('div','ve', e.ve));
+  if(e.note) c.appendChild(el('div','en', e.note));
+  const tags = [e.pos, e.category].filter(Boolean).join(' \u00b7 ');
+  if(tags) c.appendChild(el('div','sub', tags));
+  const a = el('div','actions');
+  const ok = el('button','ghost','This is right');
+  ok.onclick = () => act(e.id, 'confirm', '', c);
+  const fix = el('button','ghost','Correct it');
+  fix.onclick = () => {
+    const inp = el('input'); inp.type='text'; inp.value = e.ve;
+    const save = el('button','ghost','Save correction');
+    save.onclick = () => act(e.id, 'edit', inp.value, c);
+    a.innerHTML = ''; c.appendChild(inp); a.appendChild(save); c.appendChild(a); inp.focus();
+  };
+  const del = el('button','ghost danger','Remove');
+  del.onclick = () => act(e.id, 'delete', '', c);
+  a.appendChild(ok); a.appendChild(fix); a.appendChild(del);
+  c.appendChild(a);
+  return c;
+}
+async function act(id, action, ve, card){
+  const d = await api('/api/review', {id, action, ve});
+  if(d.ok){ card.remove(); loadStats(); }
+}
+
+loadStats();
+$('#q').focus();
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+{
+  "name": "culture",
+  "count": 6,
+  "items": [
+    {
+      "id": "cul001",
+      "title": "Venda homeland",
+      "tags": [
+        "venda",
+        "history",
+        "homeland",
+        "bantustan"
+      ],
+      "text": "Venda was a bantustan in Northern South Africa, now part of Limpopo province, founded as a homeland for the venda people. It was declared self-governing on February 1, 1973 and declared independent on September 13, 1979, though that independence was never recognised internationally. It was re-absorbed into South Africa on April 27, 1994.",
+      "source": "Wikipedia, Venda (bantustan)",
+      "review": false
+    },
+    {
+      "id": "cul002",
+      "title": "Geography",
+      "tags": [
+        "geography",
+        "land",
+        "capital",
+        "thohoyandou"
+      ],
+      "text": "The capital was Thohoyandou, moved there from Sibasa at independence in 1979. Total land area was 6807 square kilometres with a stated 1991 population of 558,797. It bordered Zimbabwe (separated by Madimbo corridor) and Mozambique (separated by Kruger National Park).",
+      "source": "Wikipedia, Venda (bantustan)",
+      "review": false
+    },
+    {
+      "id": "cul003",
+      "title": "Leadership",
+      "tags": [
+        "leadership",
+        "president",
+        "politics",
+        "mphephu"
+      ],
+      "text": "The first President was Patrick Mphephu, who was also a chief of the Venda people. His successor Frank Ravele (overthrown in 1990), after which the territory was ruled by the Council of National Unity.",
+      "source": "Wikipedia, Venda (bantustan)",
+      "review": false
+    },
+    {
+      "id": "cul004",
+      "title": "Education",
+      "tags": [
+        "education",
+        "university",
+        "univen"
+      ],
+      "text": "The University of Venda (established in 1982) was set up as an institution of higher learning for vha-Venda people.",
+      "source": "Wikipedia, Venda (bantustan)",
+      "review": false
+    },
+    {
+      "id": "cul005",
+      "title": "Wildlife and landscape",
+      "tags": [
+        "nature",
+        "wildlife",
+        "animals",
+        "mountains"
+      ],
+      "text": "Venda is divided into small areas such as Mukhase, where clean water runs off the mountains. Wildlife in the region includes elephants, lions, springbok.",
+      "source": "Wikipedia, Venda (bantustan)",
+      "review": false
+    },
+    {
+      "id": "cul006",
+      "title": "Language",
+      "tags": [
+        "language",
+        "tshivenda",
+        "orthography",
+        "writing"
+      ],
+      "text": "Tshivenda is one of the twelve official languages of South Africa and is spoken mainly in northern Limpopo. Its writing system uses letters carrying a mark underneath, such as the d, l, n, t and v forms, which change the sound. This bot matches words with or without those marks so spelling variations still find the right entry.",
+      "source": "",
+      "review": true
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "riddles",
+  "count": 3,
+  "items": [
+    {
+      "id": "rid001",
+      "ve": "Ndi na khali ya madi i sa fhelaho.",
+      "en": "I have a pot of water that never runs dry.",
+      "answer_ve": "Mulambo",
+      "answer_en": "A river",
+      "review": true
+    },
+    {
+      "id": "rid002",
+      "ve": "Ndi tshi tshimbila tshi a ntevhela, ndi tshi ima tshi a ima.",
+      "en": "When I walk it follows me, when I stop it stops.",
+      "answer_ve": "Tshirunzi",
+      "answer_en": "A shadow",
+      "review": true
+    },
+    {
+      "id": "rid003",
+      "ve": "Nndu yanga a i na muvhondo.",
+      "en": "My house has no door.",
+      "answer_ve": "Gumbu",
+      "answer_en": "An egg",
+      "review": true
+    }
+  ]
+}

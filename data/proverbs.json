@@ -1,0 +1,34 @@
+{
+  "name": "proverbs",
+  "count": 4,
+  "items": [
+    {
+      "id": "pro001",
+      "ve": "Muthu ndi muthu nga vhathu",
+      "en": "A person is a person through other people",
+      "meaning": "You become who you are through your community. The Tshivenda form of ubuntu.",
+      "review": false
+    },
+    {
+      "id": "pro002",
+      "ve": "Muta u fhaswa nga vhathu",
+      "en": "A home is built by people",
+      "meaning": "Nothing lasting is built alone.",
+      "review": true
+    },
+    {
+      "id": "pro003",
+      "ve": "Nwana a sa lili u fela nembeleloni",
+      "en": "A child who does not cry dies on the back",
+      "meaning": "Speak up about your needs or nobody will know to help you.",
+      "review": true
+    },
+    {
+      "id": "pro004",
+      "ve": "Mudi a u tou dzula u tshi vhonala",
+      "en": "A homestead is not seen without effort",
+      "meaning": "Standing still builds nothing.",
+      "review": true
+    }
+  ]
+}
